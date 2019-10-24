@@ -1,0 +1,42 @@
+version: "3.7"
+
+volumes:
+    api-postgres-data:
+    api-gunicorn-sockets:
+
+services:
+
+    nginx:
+        container_name: nginx
+        build: 
+            context: ./nginx
+        ports:
+            - 3000:80
+        volumes:
+            - api-gunicorn-sockets:/tmp/gunicorn-sockets
+
+    api:
+        container_name: api
+        build:
+            context: ./api
+        volumes:
+            - api-gunicorn-sockets:/tmp/gunicorn-sockets
+            - ./api/core:/home/api
+        environment:
+            ENV_NAME: development
+            POSTGRES_HOST: postgres
+            POSTGRES_DB: test_db
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: secret
+
+    postgres:
+        container_name: postgres
+        image: postgres:12
+        ports:
+            - "5432:5432"
+        volumes:
+            - api-postgres-data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: test_db
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: secret
