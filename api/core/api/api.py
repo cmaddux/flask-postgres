@@ -2,25 +2,28 @@
 
 Primary API provider.
 """
-from api.db import ConnectionMiddleware
 from api.sqlalchemy import get_engine
 
-from api.resources import (
-    ping,
-)
-
 #pylint: disable=import-error
-import falcon
+from flask import Flask, g
 #pylint: enable=import-error
+
+API = APPLICATION = Flask(__name__)
 
 ENGINE = get_engine()
 
-API = APPLICATION = falcon.API(
-    middleware=[
-        ConnectionMiddleware(ENGINE),
-    ]
-)
+@API.before_request
+def before_request():
+    g.connection = ENGINE.connect()
 
-PING = ping.PingResource()
+@API.route('/ping')
+def ping():
+    return {'pong': True}
 
-API.add_route('/ping', PING)
+@API.after_request
+def after_request(response):
+    conn = g.connection
+    if conn:
+        conn.close()
+
+    return response

@@ -1,6 +1,6 @@
-# Falcon - Postgres Base
+# Flask - Postgres Base
 
-A base template for a simple Falcon API and Postgres stack using Alembic for migrations.
+A base template for a simple Flask API and Postgres stack using Alembic for migrations.
 
 ## Usage
 

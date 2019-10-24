@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-falcon = "*"
+Flask = "*"
 gunicorn = "*"
 sqlalchemy = "*"
 psycopg2cffi = "*"
